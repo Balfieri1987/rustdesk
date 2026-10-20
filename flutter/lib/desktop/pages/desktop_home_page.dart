@@ -56,19 +56,19 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   final GlobalKey _childKey = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final isIncomingOnly = bind.isIncomingOnly();
-    return _buildBlock(
-        child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        buildLeftPane(context),
-        if (!isIncomingOnly) const VerticalDivider(width: 1),
-        if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
-      ],
-    ));
-  }
+Widget build(BuildContext context) {
+  super.build(context);
+  const isIncomingOnly = true;
+  return _buildBlock(
+      child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(child: Center(child: SizedBox(width: 420, child: buildLeftPane(context)))),
+      if (!isIncomingOnly) const VerticalDivider(width: 1),
+      if (!isIncomingOnly) Expanded(child: buildRightPane(context)),
+    ],
+  ));
+}
 
   Widget _buildBlock({required Widget child}) {
     return buildRemoteBlock(
