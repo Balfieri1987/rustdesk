@@ -273,9 +273,89 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
     });
   }
 
+  bool _isSettingsUnlocked = false;
+  final TextEditingController _adminPwdController = TextEditingController();
+  String _adminPwdError = '';
+
+  void _checkAdminPassword() {
+    if (_adminPwdController.text == 'Head5@2026') {
+      setState(() {
+        _isSettingsUnlocked = true;
+        _adminPwdError = '';
+      });
+    } else {
+      setState(() {
+        _adminPwdError = 'Senha incorreta!';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    if (!_isSettingsUnlocked) {
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: Center(
+          child: Container(
+            width: 380,
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                )
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.lock_rounded, size: 64, color: Colors.blueAccent),
+                const SizedBox(height: 16),
+                const Text(
+                  'Acesso Administrativo',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Configurações bloqueadas pela TI.\nDigite a senha para liberar o acesso:',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: _adminPwdController,
+                  obscureText: true,
+                  autofocus: true,
+                  onSubmitted: (_) => _checkAdminPassword(),
+                  decoration: InputDecoration(
+                    labelText: 'Senha Administrativa',
+                    prefixIcon: const Icon(Icons.password),
+                    border: const OutlineInputBorder(),
+                    errorText: _adminPwdError.isNotEmpty ? _adminPwdError : null,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  height: 44,
+                  child: ElevatedButton(
+                    onPressed: _checkAdminPassword,
+                    child: const Text('Desbloquear', style: TextStyle(fontSize: 15)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: _buildBlock(
@@ -295,7 +375,7 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
               color: Theme.of(context).scaffoldBackgroundColor,
               child: PageView(
                 controller: controller,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: _children(),
               ),
             ),
